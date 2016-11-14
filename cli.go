@@ -1,4 +1,4 @@
-package clifelian
+package cli
 
 import (
 	"bufio"
@@ -58,7 +58,7 @@ var Screen *bytes.Buffer = new(bytes.Buffer)
 // GetXY получает относительные и абсолютные координаты
 // что бы получить относительные координаты, установите флаг PCT в число:
 // Получить 10% от полной ширины до x и 20 до y
-// x, y = clifelian.GetXY(10|clifelian.PCT, 20)
+// x, y = cli.GetXY(10|cli.PCT, 20)
 func GetXY(x int, y int) (int, int) {
 	if y == -1 {
 		y = CurrentHeight() + 1
@@ -122,7 +122,7 @@ func Bold(str string) string {
 }
 
 // Color применяет к строке str заданный цвет color
-// clifelian.Color("Red string", clifelian.Red)
+// cli.Color("Red string", cli.Red)
 func Color(str string, color int) string {
 	return applyTransform(str, func(idx int, line string) string {
 		return fmt.Sprintf("%s%s%s", getColor(color), line, Reset)
@@ -141,7 +141,7 @@ func HighlightRegion(str string, from, to, color int) string {
 }
 
 // Background изменяет цвет фона строки str на color
-// clifelian.Background("string", clifelian.Red)
+// cli.Background("string", cli.Red)
 func Background(str string, color int) string {
 	return applyTransform(str, func(idx int, line string) string {
 		return fmt.Sprintf("%s%s%s", getBgColor(color), line, Reset)

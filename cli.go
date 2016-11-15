@@ -240,7 +240,8 @@ func Printf(format string, a ...interface{}) {
 	fmt.Fprintf(Screen, format, a...)
 }
 
-// Colorize делает строку цветной согласно {-тегам
+// Colorize возвращает цветную строку преобразуя {-теги
+// Пример: cli.Colorize("{Rred string{0 and {Bblue part{0")
 func Colorize(str string, a ...interface{}) string {
 	changeMap := map[string]string{
 		"{w": getColor(White),
@@ -259,6 +260,22 @@ func Colorize(str string, a ...interface{}) string {
 		"{B": getParam(Bold) + getColor(Blue),
 		"{M": getParam(Bold) + getColor(Magenta),
 		"{C": getParam(Bold) + getColor(Cyan),
+		"{_w": getBgColor(White),
+		"{_a": getBgColor(Black),
+		"{_r": getBgColor(Red),
+		"{_g": getBgColor(Green),
+		"{_y": getBgColor(Yellow),
+		"{_b": getBgColor(Blue),
+		"{_m": getBgColor(Magenta),
+		"{_c": getBgColor(Cyan),
+		"{_W": getParam(Bold) + getBgColor(White),
+		"{_A": getParam(Bold) + getBgColor(Black),
+		"{_R": getParam(Bold) + getBgColor(Red),
+		"{_G": getParam(Bold) + getBgColor(Green),
+		"{_Y": getParam(Bold) + getBgColor(Yellow),
+		"{_B": getParam(Bold) + getBgColor(Blue),
+		"{_M": getParam(Bold) + getBgColor(Magenta),
+		"{_C": getParam(Bold) + getBgColor(Cyan),
 		"{i": getParam(Italic),
 		"{u": getParam(Underline),
 		"{0": getParam(Reset),

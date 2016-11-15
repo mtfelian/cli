@@ -10,14 +10,8 @@ import (
 	"strings"
 )
 
-// Reset это сброс всего
-const Reset = "\033[0m"
-
-// ResetColor это сброс на цвет по умолчанию
-const ResetColor = "\033[32m"
-
 // LineReset возвращает курсор в начало строки и очищает её
-const LineReset = "\r\033[K"
+const LineReset = "\r\x1b[K"
 
 // Список возможных цветов
 const (
@@ -31,17 +25,31 @@ const (
 	White
 )
 
+// список возможных SGR-параметров
+const (
+	Reset = iota
+	Bold
+	Faint
+	Italic
+	Underline
+)
+
 // Output это указатель на буфер STDOUT
 var Output *bufio.Writer = bufio.NewWriter(os.Stdout)
 
-// getColor возвращает ASCII-код для цвета с кодом code
+// getColor возвращает escape-код для цвета с кодом code
 func getColor(code int) string {
-	return fmt.Sprintf("\033[3%dm", code)
+	return fmt.Sprintf("\x1b[3%dm", code)
 }
 
-// getBgColor возвращает ASCII-код для фона цвета с кодом code
+// getBgColor возвращает escape-код для фона цвета с кодом code
 func getBgColor(code int) string {
-	return fmt.Sprintf("\033[4%dm", code)
+	return fmt.Sprintf("\x1b[4%dm", code)
+}
+
+// getParam возвращает escape-код для параметров текста
+func getParam(code int) string {
+	return fmt.Sprintf("\x1b[%dm", code)
 }
 
 /*
@@ -90,12 +98,12 @@ func applyTransform(str string, transform sf) (out string) {
 
 // Clear очищает экран
 func Clear() {
-	Output.WriteString("\033[2J")
+	Output.WriteString("\x1b[2J")
 }
 
 // MoveСursor перемещает курсор в положение, заданное координатами (x, y)
 func MoveCursor(x int, y int) {
-	fmt.Fprintf(Screen, "\033[%d;%dH", x, y)
+	fmt.Fprintf(Screen, "\x1b[%d;%dH", x, y)
 }
 
 // MoveTo перемещает строку str в положение, заданное координатами (x, y)
@@ -103,7 +111,7 @@ func MoveTo(str string, x int, y int) (out string) {
 	x, y = getXY(x, y)
 
 	return applyTransform(str, func(idx int, line string) string {
-		return fmt.Sprintf("\033[%d;%dH%s", y+idx, x, line)
+		return fmt.Sprintf("\x1b[%d;%dH%s", y+idx, x, line)
 	})
 }
 
@@ -114,18 +122,18 @@ func ResetLine(str string) (out string) {
 	})
 }
 
-// Bold делает строку str жирной
-func Bold(str string) string {
-	return applyTransform(str, func(idx int, line string) string {
-		return fmt.Sprintf("\033[1m%s\033[0m", line)
-	})
-}
-
 // Color применяет к строке str заданный цвет color
 // cli.Color("Red string", cli.Red)
 func Color(str string, color int) string {
 	return applyTransform(str, func(idx int, line string) string {
 		return fmt.Sprintf("%s%s%s", getColor(color), line, Reset)
+	})
+}
+
+// MakeBold делает строку str жирной
+func MakeBold(str string) string {
+	return applyTransform(str, func(idx int, line string) string {
+		return fmt.Sprintf("\033[1m%s\033[0m", line)
 	})
 }
 
@@ -224,4 +232,33 @@ func Println(a ...interface{}) {
 // Printf пишет в буфер экрана согласно заданному формату format
 func Printf(format string, a ...interface{}) {
 	fmt.Fprintf(Screen, format, a...)
+}
+
+// Colorize делает строку цветной согласно {-тегам
+func Colorize(str string, a ...interface{}) string {
+	changeMap := map[string]string{
+		"{w": getColor(White),
+		"{a": getColor(Black),
+		"{r": getColor(Red),
+		"{g": getColor(Green),
+		"{y": getColor(Yellow),
+		"{b": getColor(Blue),
+		"{m": getColor(Magenta),
+		"{c": getColor(Cyan),
+		"{W": getParam(Bold) + getColor(White),
+		"{A": getParam(Bold) + getColor(Black),
+		"{R": getParam(Bold) + getColor(Red),
+		"{G": getParam(Bold) + getColor(Green),
+		"{Y": getParam(Bold) + getColor(Yellow),
+		"{B": getParam(Bold) + getColor(Blue),
+		"{M": getParam(Bold) + getColor(Magenta),
+		"{C": getParam(Bold) + getColor(Cyan),
+		"{i": getParam(Italic),
+		"{u": getParam(Underline),
+		"{0": getParam(Reset),
+	}
+	for key, value := range changeMap {
+		str = strings.Replace(str, key, value, -1)
+	}
+	return fmt.Sprintf(str, a...)
 }

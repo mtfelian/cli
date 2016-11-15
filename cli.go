@@ -55,21 +55,21 @@ const PCT = 0x8000 << shift
 // Screen это глобальный буфер экрана
 var Screen *bytes.Buffer = new(bytes.Buffer)
 
-// GetXY получает относительные и абсолютные координаты
-// что бы получить относительные координаты, установите флаг PCT в число:
-// Получить 10% от полной ширины до x и 20 до y
+// getXY получает относительные и абсолютные координаты
+// что бы получить относительные координаты, установите флаг PCT в число.
+// Пример. Получить 10% от полной ширины по x и 20 по y
 // x, y = cli.GetXY(10|cli.PCT, 20)
-func GetXY(x int, y int) (int, int) {
+func getXY(x int, y int) (int, int) {
 	if y == -1 {
 		y = CurrentHeight() + 1
 	}
 
 	if x&PCT != 0 {
-		x = int((x & 0xFF) * Width() / 100)
+		x = int((x & 0xFF) * GetWidth() / 100)
 	}
 
 	if y&PCT != 0 {
-		y = int((y & 0xFF) * Height() / 100)
+		y = int((y & 0xFF) * GetHeight() / 100)
 	}
 
 	return x, y
@@ -100,7 +100,7 @@ func MoveCursor(x int, y int) {
 
 // MoveTo перемещает строку str в положение, заданное координатами (x, y)
 func MoveTo(str string, x int, y int) (out string) {
-	x, y = GetXY(x, y)
+	x, y = getXY(x, y)
 
 	return applyTransform(str, func(idx int, line string) string {
 		return fmt.Sprintf("\033[%d;%dH%s", y+idx, x, line)
@@ -173,8 +173,8 @@ func getWinsize() (int, int, error) {
 	return x, y, nil
 }
 
-// Width возвращает ширину консоли
-func Width() int {
+// GetWidth возвращает ширину консоли
+func GetWidth() int {
 	x, _, err := getWinsize()
 	if err != nil {
 		return -1
@@ -182,8 +182,8 @@ func Width() int {
 	return x
 }
 
-// Height возвращает высоту консоли
-func Height() int {
+// GetHeight возвращает высоту консоли
+func GetHeight() int {
 	_, y, err := getWinsize()
 	if err != nil {
 		return -1
@@ -199,7 +199,7 @@ func CurrentHeight() int {
 // Flush записывает в буфер экрана с учётом что бы он не переполнился
 func Flush() {
 	for idx, str := range strings.Split(Screen.String(), "\n") {
-		height := Height()
+		height := GetHeight()
 		if idx > height && height > 0 {
 			return
 		}
@@ -224,22 +224,4 @@ func Println(a ...interface{}) {
 // Printf пишет в буфер экрана согласно заданному формату format
 func Printf(format string, a ...interface{}) {
 	fmt.Fprintf(Screen, format, a...)
-}
-
-func Context(data string, idx, max int) string {
-	var start, end int
-
-	if len(data[:idx]) < (max / 2) {
-		start = 0
-	} else {
-		start = idx - max/2
-	}
-
-	if len(data)-idx < (max / 2) {
-		end = len(data) - 1
-	} else {
-		end = idx + max/2
-	}
-
-	return data[start:end]
 }

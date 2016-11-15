@@ -52,7 +52,7 @@ func getParam(code int) string {
 
 // Println печатает строку str и добавляет в конец перенос строки
 func Println(str string, a ...interface{}) {
-	fmt.Printf(str+"\n", a...)
+	Printf(str+"\n", a...)
 }
 
 // Printf печатает строку str и подставляет туда параметры

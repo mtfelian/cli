@@ -26,7 +26,6 @@ const (
 	Underline
 )
 
-
 const (
 	// ClearScreen это escape-код для очистки экрана
 	ClearScreen = "\x1b[2J"
@@ -38,12 +37,12 @@ const (
 
 // getColor возвращает escape-код для цвета с кодом code
 func getColor(code int) string {
-	return fmt.Sprintf("\x1b[3%dm", code)
+	return getParam(30 + code)
 }
 
 // getBgColor возвращает escape-код для фона цвета с кодом code
 func getBgColor(code int) string {
-	return fmt.Sprintf("\x1b[4%dm", code)
+	return getParam(40 + code)
 }
 
 // getParam возвращает escape-код для параметров текста
@@ -55,22 +54,22 @@ func getParam(code int) string {
 // Пример: cli.Colorize("{Rred string{0 and {Bblue part{0")
 func Colorize(str string, a ...interface{}) string {
 	changeMap := map[string]string{
-		"{w": getColor(White),
-		"{a": getColor(Black),
-		"{r": getColor(Red),
-		"{g": getColor(Green),
-		"{y": getColor(Yellow),
-		"{b": getColor(Blue),
-		"{m": getColor(Magenta),
-		"{c": getColor(Cyan),
-		"{W": getParam(Bold) + getColor(White),
-		"{A": getParam(Bold) + getColor(Black),
-		"{R": getParam(Bold) + getColor(Red),
-		"{G": getParam(Bold) + getColor(Green),
-		"{Y": getParam(Bold) + getColor(Yellow),
-		"{B": getParam(Bold) + getColor(Blue),
-		"{M": getParam(Bold) + getColor(Magenta),
-		"{C": getParam(Bold) + getColor(Cyan),
+		"{w":  getColor(White),
+		"{a":  getColor(Black),
+		"{r":  getColor(Red),
+		"{g":  getColor(Green),
+		"{y":  getColor(Yellow),
+		"{b":  getColor(Blue),
+		"{m":  getColor(Magenta),
+		"{c":  getColor(Cyan),
+		"{W":  getParam(Bold) + getColor(White),
+		"{A":  getParam(Bold) + getColor(Black),
+		"{R":  getParam(Bold) + getColor(Red),
+		"{G":  getParam(Bold) + getColor(Green),
+		"{Y":  getParam(Bold) + getColor(Yellow),
+		"{B":  getParam(Bold) + getColor(Blue),
+		"{M":  getParam(Bold) + getColor(Magenta),
+		"{C":  getParam(Bold) + getColor(Cyan),
 		"{_w": getBgColor(White),
 		"{_a": getBgColor(Black),
 		"{_r": getBgColor(Red),
@@ -87,10 +86,10 @@ func Colorize(str string, a ...interface{}) string {
 		"{_B": getParam(Bold) + getBgColor(Blue),
 		"{_M": getParam(Bold) + getBgColor(Magenta),
 		"{_C": getParam(Bold) + getBgColor(Cyan),
-		"{i": getParam(Italic),
-		"{u": getParam(Underline),
-		"{0": getParam(Reset),
-		"{s": ClearScreen,
+		"{i":  getParam(Italic),
+		"{u":  getParam(Underline),
+		"{0":  getParam(Reset),
+		"{s":  ClearScreen,
 	}
 	for key, value := range changeMap {
 		str = strings.Replace(str, key, value, -1)

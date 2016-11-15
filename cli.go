@@ -159,19 +159,25 @@ func Background(str string, color int) string {
 // getWinsize получает ширину и высоту терминала
 // возвращает: 1. ширину (x), 2. высоту (y), 3. ошибку/nil
 func getWinsize() (int, int, error) {
+	x, y := 0, 0
+
 	cmd := exec.Command("stty", "size")
 	cmd.Stdin = os.Stdin
 	out, err := cmd.Output()
+	if err != nil {
+		return x, y, err
+	}
 
-	x, y := 0, 0
 	outputParts := strings.Split(string(out), " ")
 	if len(outputParts) != 2 {
 		return x, y, fmt.Errorf("Wrong output: %s", out)
 	}
+
 	x64, err := strconv.ParseInt(outputParts[0], 10, 32)
 	if err != nil {
 		return x, y, err
 	}
+
 	y64, err := strconv.ParseInt(outputParts[1], 10, 32)
 	if err != nil {
 		return x, y, err

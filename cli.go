@@ -50,6 +50,16 @@ func getParam(code int) string {
 	return fmt.Sprintf("\x1b[%dm", code)
 }
 
+// Println печатает строку str и добавляет в конец перенос строки
+func Println(str string, a ...interface{}) {
+	fmt.Printf(str+"\n", a...)
+}
+
+// Printf печатает строку str и подставляет туда параметры
+func Printf(str string, a ...interface{}) {
+	fmt.Printf(Colorize(str), a...)
+}
+
 // Colorize возвращает цветную строку преобразуя {-теги
 // Пример: cli.Colorize("{Rred string{0 and {Bblue part{0")
 func Colorize(str string, a ...interface{}) string {

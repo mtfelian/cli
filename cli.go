@@ -63,6 +63,7 @@ func Printf(str string, a ...interface{}) {
 // Colorize возвращает цветную строку преобразуя {-теги
 // Пример: cli.Colorize("{Rred string{0 and {Bblue part{0")
 func Colorize(str string, a ...interface{}) string {
+	str = fmt.Sprintf(str, a...)
 	changeMap := map[string]string{
 		"{w":  getColor(White),
 		"{a":  getColor(Black),
@@ -104,5 +105,5 @@ func Colorize(str string, a ...interface{}) string {
 	for key, value := range changeMap {
 		str = strings.Replace(str, key, value, -1)
 	}
-	return fmt.Sprintf(str, a...)
+	return str
 }

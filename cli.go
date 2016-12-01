@@ -57,7 +57,7 @@ func Println(str string, a ...interface{}) {
 
 // Printf печатает строку str и подставляет туда параметры
 func Printf(str string, a ...interface{}) {
-	fmt.Printf(Colorize(str), a...)
+	fmt.Printf(Colorize(str, a...))
 }
 
 // Colorize возвращает цветную строку преобразуя {-теги

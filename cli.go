@@ -99,11 +99,11 @@ func Colorize(str string, a ...interface{}) string {
 		"{_C": getParam(Bold) + getBgColor(Cyan),
 		"{i":  getParam(Italic),
 		"{u":  getParam(Underline),
-		"{0":  getParam(Reset),
 		"{s":  ClearScreen,
 	}
 	for key, value := range changeMap {
-		str = strings.Replace(str, key, value, -1)
+		str = strings.Replace(str, key, getParam(Reset)+value, -1)
 	}
+	str = strings.Replace(str, "{0", getParam(Reset), -1)
 	return str
 }

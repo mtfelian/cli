@@ -60,6 +60,11 @@ func Printf(str string, a ...interface{}) {
 	fmt.Printf(Colorize(str, a...))
 }
 
+// Sprintf возвращает строку str и подставляет туда параметры
+func Sprintf(str string, a ...interface{}) string {
+	return fmt.Sprintf(Colorize(str, a...))
+}
+
 // Colorize возвращает цветную строку преобразуя {-теги
 // Пример: cli.Colorize("{Rred string{0 and {Bblue part{0")
 func Colorize(str string, a ...interface{}) string {

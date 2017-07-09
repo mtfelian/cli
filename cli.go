@@ -68,48 +68,52 @@ func Sprintf(str string, a ...interface{}) string {
 // Colorize возвращает цветную строку преобразуя {-теги
 // Пример: cli.Colorize("{Rred string{0 and {Bblue part{0")
 func Colorize(str string, a ...interface{}) string {
-	const prefix = "{"
+	const (
+		prefix  = "{"
+		postfix = "|"
+	)
+
 	str = fmt.Sprintf(str, a...)
 	changeMap := map[string]string{
-		prefix + "w":  getColor(White),
-		prefix + "a":  getColor(Black),
-		prefix + "r":  getColor(Red),
-		prefix + "g":  getColor(Green),
-		prefix + "y":  getColor(Yellow),
-		prefix + "b":  getColor(Blue),
-		prefix + "m":  getColor(Magenta),
-		prefix + "c":  getColor(Cyan),
-		prefix + "W":  getParam(Bold) + getColor(White),
-		prefix + "A":  getParam(Bold) + getColor(Black),
-		prefix + "R":  getParam(Bold) + getColor(Red),
-		prefix + "G":  getParam(Bold) + getColor(Green),
-		prefix + "Y":  getParam(Bold) + getColor(Yellow),
-		prefix + "B":  getParam(Bold) + getColor(Blue),
-		prefix + "M":  getParam(Bold) + getColor(Magenta),
-		prefix + "C":  getParam(Bold) + getColor(Cyan),
-		prefix + "_w": getBgColor(White),
-		prefix + "_a": getBgColor(Black),
-		prefix + "_r": getBgColor(Red),
-		prefix + "_g": getBgColor(Green),
-		prefix + "_y": getBgColor(Yellow),
-		prefix + "_b": getBgColor(Blue),
-		prefix + "_m": getBgColor(Magenta),
-		prefix + "_c": getBgColor(Cyan),
-		prefix + "_W": getParam(Bold) + getBgColor(White),
-		prefix + "_A": getParam(Bold) + getBgColor(Black),
-		prefix + "_R": getParam(Bold) + getBgColor(Red),
-		prefix + "_G": getParam(Bold) + getBgColor(Green),
-		prefix + "_Y": getParam(Bold) + getBgColor(Yellow),
-		prefix + "_B": getParam(Bold) + getBgColor(Blue),
-		prefix + "_M": getParam(Bold) + getBgColor(Magenta),
-		prefix + "_C": getParam(Bold) + getBgColor(Cyan),
-		prefix + "i":  getParam(Italic),
-		prefix + "u":  getParam(Underline),
-		prefix + "s":  ClearScreen,
+		prefix + "w" + postfix:  getColor(White),
+		prefix + "a" + postfix:  getColor(Black),
+		prefix + "r" + postfix:  getColor(Red),
+		prefix + "g" + postfix:  getColor(Green),
+		prefix + "y" + postfix:  getColor(Yellow),
+		prefix + "b" + postfix:  getColor(Blue),
+		prefix + "m" + postfix:  getColor(Magenta),
+		prefix + "c" + postfix:  getColor(Cyan),
+		prefix + "W" + postfix:  getParam(Bold) + getColor(White),
+		prefix + "A" + postfix:  getParam(Bold) + getColor(Black),
+		prefix + "R" + postfix:  getParam(Bold) + getColor(Red),
+		prefix + "G" + postfix:  getParam(Bold) + getColor(Green),
+		prefix + "Y" + postfix:  getParam(Bold) + getColor(Yellow),
+		prefix + "B" + postfix:  getParam(Bold) + getColor(Blue),
+		prefix + "M" + postfix:  getParam(Bold) + getColor(Magenta),
+		prefix + "C" + postfix:  getParam(Bold) + getColor(Cyan),
+		prefix + "_w" + postfix: getBgColor(White),
+		prefix + "_a" + postfix: getBgColor(Black),
+		prefix + "_r" + postfix: getBgColor(Red),
+		prefix + "_g" + postfix: getBgColor(Green),
+		prefix + "_y" + postfix: getBgColor(Yellow),
+		prefix + "_b" + postfix: getBgColor(Blue),
+		prefix + "_m" + postfix: getBgColor(Magenta),
+		prefix + "_c" + postfix: getBgColor(Cyan),
+		prefix + "_W" + postfix: getParam(Bold) + getBgColor(White),
+		prefix + "_A" + postfix: getParam(Bold) + getBgColor(Black),
+		prefix + "_R" + postfix: getParam(Bold) + getBgColor(Red),
+		prefix + "_G" + postfix: getParam(Bold) + getBgColor(Green),
+		prefix + "_Y" + postfix: getParam(Bold) + getBgColor(Yellow),
+		prefix + "_B" + postfix: getParam(Bold) + getBgColor(Blue),
+		prefix + "_M" + postfix: getParam(Bold) + getBgColor(Magenta),
+		prefix + "_C" + postfix: getParam(Bold) + getBgColor(Cyan),
+		prefix + "i" + postfix:  getParam(Italic),
+		prefix + "u" + postfix:  getParam(Underline),
+		prefix + "s" + postfix:  ClearScreen,
 	}
 	for key, value := range changeMap {
 		str = strings.Replace(str, key, getParam(Reset)+value, -1)
 	}
-	str = strings.Replace(str, prefix+"0", getParam(Reset), -1)
+	str = strings.Replace(str, prefix+"0"+postfix, getParam(Reset), -1)
 	return str
 }

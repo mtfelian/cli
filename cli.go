@@ -74,6 +74,16 @@ func Colorize(str string, a ...interface{}) string {
 	)
 
 	str = fmt.Sprintf(str, a...)
+	/*
+		Предыдущий формат: {G
+		Новый формат: {G|
+		Переход:
+		замена
+		  \{((?:(?:_)?(?:[wargybmcWARGYBMC]))|(?:[ius0]))
+		на
+		  {$1|
+		в строковых литералах
+	*/
 	changeMap := map[string]string{
 		prefix + "w" + postfix:  getColor(White),
 		prefix + "a" + postfix:  getColor(Black),

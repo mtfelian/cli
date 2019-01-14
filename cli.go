@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-// список возможных кодов цветов
+// Colour codes constants
 const (
 	Black = iota
 	Red
@@ -17,7 +17,7 @@ const (
 	White
 )
 
-// список возможных SGR-кодов
+// SGR-codes list constants
 const (
 	Reset = iota
 	Bold
@@ -27,46 +27,55 @@ const (
 )
 
 const (
-	// ClearScreen это escape-код для очистки экрана
+	// ClearScreen is an escape code to clear the screen
 	ClearScreen = "\x1b[2J"
-	// Move это escape-код для перемещения курсора на x, y
+	// Move is an escape code for move the cursor to (x,y)
 	Move = "\x1b[%d;%dH"
-	// LineReset это escape-код для возврата курсора в начало строки и очистки её
+	// LineReset is an escape code to return cursor to the line beginning and line cleanup
 	LineReset = "\r\x1b[K"
 )
 
-// getColor возвращает escape-код для цвета с кодом code
+// getColor returns an escape code for colour with given colour code
 func getColor(code int) string {
 	return getParam(30 + code)
 }
 
-// getBgColor возвращает escape-код для фона цвета с кодом code
+// getBgColor returns an escape code for background colour with given colour code
 func getBgColor(code int) string {
 	return getParam(40 + code)
 }
 
-// getParam возвращает escape-код для параметров текста
+// getParam returns an escape code for text parameters
 func getParam(code int) string {
 	return fmt.Sprintf("\x1b[%dm", code)
 }
 
-// Println печатает строку str и добавляет в конец перенос строки
+// Println like Printf but adds a new line to the end of string
 func Println(str string, a ...interface{}) {
 	Printf(str+"\n", a...)
 }
 
-// Printf печатает строку str и подставляет туда параметры
+// Printf the string str with specifier substitutions
 func Printf(str string, a ...interface{}) {
 	fmt.Printf(Colorize(str, a...))
 }
 
-// Sprintf возвращает строку str и подставляет туда параметры
+// Sprintf returns a string str after specifier substitutions
 func Sprintf(str string, a ...interface{}) string {
 	return fmt.Sprintf(Colorize(str, a...))
 }
 
-// Colorize возвращает цветную строку преобразуя {-теги
-// Пример: cli.Colorize("{Rred string{0 and {Bblue part{0")
+// Colorize returns a coloured string, converting {-tags
+// Ex.: cli.Colorize("{Rred string{0 and {Bblue part{0")
+// Note.
+//		Old format: {G
+//		New format: {G|
+//		Migration:
+//		replace
+//		  \{((?:(?:_)?(?:[wargybmcWARGYBMC]))|(?:[ius0]))
+//		with
+//		  {$1|
+//		in string literals only
 func Colorize(str string, a ...interface{}) string {
 	const (
 		prefix  = "{"
@@ -74,16 +83,6 @@ func Colorize(str string, a ...interface{}) string {
 	)
 
 	str = fmt.Sprintf(str, a...)
-	/*
-		Предыдущий формат: {G
-		Новый формат: {G|
-		Переход:
-		замена
-		  \{((?:(?:_)?(?:[wargybmcWARGYBMC]))|(?:[ius0]))
-		на
-		  {$1|
-		в строковых литералах
-	*/
 	changeMap := map[string]string{
 		prefix + "w" + postfix:  getColor(White),
 		prefix + "a" + postfix:  getColor(Black),
